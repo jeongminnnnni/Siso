@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Siso - 마이페이지</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; background-color: #f4f7fe; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: white; border-bottom: 1px solid #eee; }
+        .nav-logo { font-size: 1.8rem; font-weight: bold; color: #007bff; }
+        .nav-menu a { text-decoration: none; color: #333; margin: 0 15px; }
+        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .nav-actions .search-icon { font-size: 1.5rem; color: #333; text-decoration: none; }
+        .nav-actions .user-profile { background-color: #e7f1ff; color: #007bff; padding: 8px 15px; border-radius: 20px; font-weight: bold; text-decoration: none; }
+        .main-container { display: flex; gap: 20px; padding: 20px 5%; }
+        .content-area { flex-grow: 1; }
+        .sidebar { width: 300px; flex-shrink: 0; }
+        .card { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .recommend-banner { position: relative; color: white; border-radius: 12px; overflow: hidden; padding: 40px; background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(https://i.ibb.co/3kR0Yg1/hero-bg.jpg) no-repeat center center/cover; }
+        .recommend-banner h2 { margin: 0; font-size: 1.8rem; }
+        .recommend-banner p { font-size: 1.1rem; }
+        .recommend-banner a { position: absolute; bottom: 20px; right: 20px; background: white; color: #333; padding: 10px 15px; border-radius: 8px; text-decoration: none; font-weight: bold; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .section-header h3 { margin: 0; font-size: 1.2rem; }
+        .section-header a { text-decoration: none; color: #888; }
+        .keywords-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .keywords-list span { background: #f1f3f5; padding: 8px 12px; border-radius: 8px; font-size: 0.9rem; }
+        .items-scroll { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; }
+        .item-card { flex: 0 0 180px; }
+        .item-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; }
+        .item-card h4 { margin: 10px 0 5px; font-size: 1rem; }
+        .item-card p { margin: 0; color: #555; font-size: 0.9rem; }
+        .sidebar .profile { text-align: center; }
+        .sidebar .profile img { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 10px; }
+        .sidebar .profile-btn { width: 100%; background: #007bff; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: center; }
+        .grid-menu div { background: #f1f3f5; padding: 15px; border-radius: 8px; }
+        .siso-chat .chat-list { display: flex; gap: 15px; justify-content: center; }
+        .siso-chat .chat-list img { width: 50px; height: 50px; border-radius: 50%; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">SISO</div>
+        <div class="nav-menu">
+            <a href="#">여행</a><a href="#">클래스</a><a href="#">시소챗</a><a href="#">고객센터</a>
+        </div>
+        <div class="nav-actions">
+            <a href="/search" class="search-icon">🔍</a>
+            <a href="/mypage" class="user-profile" id="nav-username"></a>
+        </div>
+    </nav>
+    <div class="main-container">
+        <main class="content-area">
+            <div id="recommend-banner-container" class="card recommend-banner"></div>
+            <div class="card">
+                <div class="section-header"><h3>내 키워드</h3><a href="#">다시 설정하기 ⚙️</a></div>
+                <div id="my-keywords-container" class="keywords-list"></div>
+            </div>
+            <div class="card">
+                <div class="section-header"><h3>최근 본 상품</h3><a href="#">찜 목록 ></a></div>
+                <div id="recent-items-container" class="items-scroll"></div>
+            </div>
+        </main>
+        <aside class="sidebar">
+            <div class="card profile">
+                <p>마이페이지</p>
+                <img id="sidebar-profile-img" src="" alt="프로필">
+                <h3 id="sidebar-username"></h3>
+                <button class="profile-btn">프로필 설정</button>
+            </div>
+            <div class="card">
+                <h3>내 기록</h3>
+                <div class="grid-menu">
+                    <div>계정관리</div><div>나의 캘린더</div><div>이용 내역</div><div>결제 내역</div>
+                </div>
+            </div>
+            <div class="card siso-chat">
+                <h3>시소챗</h3>
+                <div class="chat-list">
+                    <img src="https://i.ibb.co/hZ5wK1C/flowers.jpg" alt="chat1"><img src="https://i.ibb.co/GvxV1sP/baking.jpg" alt="chat2"><div style="width:50px; height:50px; border-radius:50%; background:#eee; display:flex; align-items:center; justify-content:center; font-size:2rem;">+</div>
+                </div>
+            </div>
+        </aside>
+    </div>
+    <script>
+        window.onload = async function() {
+            const token = localStorage.getItem('accessToken');
+            if (!token) { window.location.href = '/'; return; }
+            try {
+                const response = await fetch('/users/me', { headers: { 'Authorization': `Bearer ${token}` } });
+                if (response.ok) {
+                    const data = await response.json();
+                    renderMyPage(data);
+                } else {
+                    localStorage.removeItem('accessToken');
+                    window.location.href = '/';
+                }
+            } catch (error) { console.error('Failed to fetch my page data:', error); }
+        };
+        function renderMyPage(data) {
+            document.getElementById('nav-username').textContent = `${data.profile.username}님 환영해요`;
+            document.getElementById('sidebar-username').textContent = `${data.profile.username}님`;
+            document.getElementById('sidebar-profile-img').src = data.profile.profile_image_url;
+            if (data.personalized_recommendation) {
+                const banner = document.getElementById('recommend-banner-container');
+                banner.innerHTML = `<p>이런 여행은 어떠신가요?</p><h2>"${data.personalized_recommendation.title}"</h2><a href="#">여행 추천 더보기</a>`;
+            }
+            const keywordsContainer = document.getElementById('my-keywords-container');
+            const profile = data.onboarding_profile;
+            keywordsContainer.innerHTML = `
+                <span>${profile.residence}</span><span>${profile.activity_level}</span>
+                <span>${profile.hobbies.join(', ')}</span><span>취미 ${profile.hobby_count}</span>
+                <span>${profile.hobby_proficiency}</span><span>${profile.spending_habit}</span>
+                <span>${profile.trip_duration}</span>`;
+            const recentItemsContainer = document.getElementById('recent-items-container');
+            recentItemsContainer.innerHTML = data.recent_items.map(item => `
+                <div class="item-card">
+                    <img src="https://i.ibb.co/6r0M3G6/food-tour.jpg" alt="${item.title}">
+                    <h4>${item.title}</h4>
+                    <p>${item.price.toLocaleString()}원~</p>
+                </div>`).join('');
+        }
+    </script>
+</body>
+</html>

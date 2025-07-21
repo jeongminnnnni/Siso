@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Siso - 나만의 여행 설계</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: white; border-bottom: 1px solid #eee; }
+        .nav-logo { font-size: 1.8rem; font-weight: bold; color: #007bff; }
+        .nav-menu a { text-decoration: none; color: #333; margin: 0 15px; }
+        .nav-actions a { text-decoration: none; color: #007bff; border: 1px solid #007bff; padding: 8px 15px; border-radius: 5px; margin-left: 10px; }
+        .nav-actions a.login { background-color: #007bff; color: white; }
+        .hero { position: relative; text-align: center; color: white; background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.1)), url(https://i.ibb.co/3kR0Yg1/hero-bg.jpg) no-repeat center center/cover; padding: 150px 20px; }
+        .hero-tags { margin-bottom: 40px; }
+        .hero-tags span { background-color: rgba(0, 0, 0, 0.4); padding: 5px 12px; border-radius: 15px; font-size: 0.9rem; margin: 0 5px; }
+        .hero-title { font-size: 3rem; margin: 20px 0; line-height: 1.3; }
+        .hero-title span { color: #d6baff; } /* '설계 마법사' 부분 색상 */
+        .cta-button { background-color: #8a63f5; color: white; padding: 15px 30px; border-radius: 8px; text-decoration: none; font-size: 1.2rem; font-weight: bold; transition: background-color 0.2s; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">SISO</div>
+        <div class="nav-menu">
+            <a href="#">여행</a><a href="#">클래스</a><a href="#">시소챗</a><a href="#">고객센터</a>
+        </div>
+        <div class="nav-actions">
+            <a href="/search">예약 검색</a><a href="/login-options" class="login">로그인하기</a>
+        </div>
+    </nav>
+    <section class="hero">
+        <div class="hero-tags">
+            <span>🔥 인기 검색어</span><span>#맛집투어</span><span>#힐링여행</span><span>#걷기최소</span>
+        </div>
+        <div class="hero-content">
+            <h2 class="hero-title">3분 이내로 나에게 맞는 플랜을<br>구성해주는 <span>'설계 마법사'</span></h2>
+            <a href="/siso" class="cta-button">설계 마법사 시작하기 →</a>
+        </div>
+    </section>
+</body>
+</html>

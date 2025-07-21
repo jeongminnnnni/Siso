@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Siso - 검색</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; background-color: #f8f9fa; }
+        .search-header { display: flex; align-items: center; padding: 15px 5%; background-color: white; border-bottom: 1px solid #eee; }
+        .logo { font-size: 1.8rem; font-weight: bold; color: #007bff; margin-right: 30px; }
+        .search-bar { display: flex; align-items: center; flex-grow: 1; border: 1px solid #007bff; border-radius: 8px; padding: 5px; }
+        .search-bar input { flex-grow: 1; border: none; outline: none; padding: 10px; font-size: 1rem; }
+        .search-bar .icon { font-size: 1.5rem; color: #007bff; margin: 0 10px; }
+        .close-button { font-size: 2rem; color: #888; text-decoration: none; margin-left: 30px; }
+        .search-content { max-width: 800px; margin: 40px auto; }
+        .popular-searches h2 { font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+        .keywords-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .keyword-card { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; }
+        .keyword-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+        .keyword-card:hover img { transform: scale(1.05); }
+        .keyword-card .tag { position: absolute; top: 10px; left: 10px; color: white; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.7); }
+    </style>
+</head>
+<body>
+    <header class="search-header">
+        <div class="logo">SISO</div>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="검색어를 입력해주세요." onkeypress="handleKeyPress(event)">
+            <span class="icon">🔍</span>
+        </div>
+        <a href="javascript:history.back()" class="close-button">×</a>
+    </header>
+
+    <main class="search-content">
+        <div class="popular-searches">
+            <h2>🔥 인기 검색어</h2>
+            <div class="keywords-grid">
+                <div class="keyword-card" onclick="searchByTag('#맛집투어')">
+                    <img src="https://i.ibb.co/6r0M3G6/food-tour.jpg" alt="맛집투어">
+                    <span class="tag">#맛집투어</span>
+                </div>
+                <div class="keyword-card" onclick="searchByTag('#힐링여행')">
+                    <img src="https://i.ibb.co/bX1nJ7W/healing-trip.jpg" alt="힐링여행">
+                    <span class="tag">#힐링여행</span>
+                </div>
+                <div class="keyword-card" onclick="searchByTag('#걷기최소')">
+                    <img src="https://i.ibb.co/5Khk7yq/relaxing.jpg" alt="걷기최소">
+                    <span class="tag">#걷기최소</span>
+                </div>
+                <div class="keyword-card" onclick="searchByTag('#등산')">
+                    <img src="https://i.ibb.co/Yd7qg0p/hiking.jpg" alt="등산">
+                    <span class="tag">#등산</span>
+                </div>
+                <div class="keyword-card" onclick="searchByTag('#베이킹')">
+                    <img src="https://i.ibb.co/GvxV1sP/baking.jpg" alt="베이킹">
+                    <span class="tag">#베이킹</span>
+                </div>
+                <div class="keyword-card" onclick="searchByTag('#꽃꽂이')">
+                    <img src="https://i.ibb.co/hZ5wK1C/flowers.jpg" alt="꽃꽂이">
+                    <span class="tag">#꽃꽂이</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 키워드 태그 클릭 시 검색 실행
+        function searchByTag(tag) {
+            const keyword = tag.replace('#', ''); // '#' 문자 제거
+            window.location.href = `/siso?keywords=${keyword}`;
+        }
+
+        // 검색창에서 엔터 키 입력 시 검색 실행
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                const keyword = document.getElementById('search-input').value;
+                if (keyword) {
+                    window.location.href = `/siso?keywords=${keyword}`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

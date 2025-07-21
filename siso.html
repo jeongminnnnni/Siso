@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Siso - 맞춤 추천 결과</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; background-color: #f8f9fa; }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: white; border-bottom: 1px solid #eee; }
+        .nav-logo { font-size: 1.8rem; font-weight: bold; color: #007bff; }
+        .nav-menu a { text-decoration: none; color: #333; margin: 0 15px; }
+        .nav-actions { display: flex; align-items: center; gap: 15px; }
+        .nav-actions a { text-decoration: none; color: #333; }
+        .nav-actions .login-btn { background-color: #007bff; color: white; padding: 8px 15px; border-radius: 5px; }
+        .main-content { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .page-title { text-align: center; font-size: 1.8rem; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .page-subtitle { text-align: center; color: #888; margin-bottom: 30px; }
+        .filter-summary-bar { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; background-color: #e7f1ff; color: #0056b3; padding: 15px 20px; border-radius: 8px; margin-bottom: 30px; }
+        .summary-item { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .item-card { background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); overflow: hidden; position: relative; }
+        .item-card img { width: 100%; height: 200px; object-fit: cover; display: block; }
+        .item-card .heart { position: absolute; top: 15px; right: 15px; font-size: 1.5rem; color: white; text-shadow: 0 0 5px rgba(0,0,0,0.5); cursor: pointer; }
+        .card-content { padding: 20px; }
+        .card-content .tags { font-size: 0.9rem; color: #666; margin-bottom: 10px; }
+        .card-content h3 { margin: 0 0 10px; font-size: 1.2rem; }
+        .card-content .price { font-size: 1.3rem; font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">SISO</div>
+        <div class="nav-menu"><a href="#">여행</a><a href="#">클래스</a><a href="#">시소챗</a><a href="#">고객센터</a></div>
+        <div class="nav-actions"><a href="/search">🔍</a><a href="#">예약 검색</a><a href="/" class="login-btn">로그아웃</a></div>
+    </nav>
+    <main class="main-content">
+        <h2 id="page-title" class="page-title">분석 중...</h2>
+        <p class="page-subtitle">다음과 같은 정보를 바탕으로 맞춤 일정을 제시할 거예요 📦</p>
+        
+        <div id="filter-summary-bar" class="filter-summary-bar">
+            <!-- 요약 정보는 JS로 동적으로 채워집니다 -->
+        </div>
+        
+        <div id="results-grid" class="results-grid">
+            <!-- 추천 결과 카드는 JS로 동적으로 채워집니다 -->
+        </div>
+    </main>
+
+    <script>
+        window.onload = async function() {
+            // 1. 현재 페이지의 URL에서 사용자가 선택한 필터 값들을 읽어옵니다.
+            const params = new URLSearchParams(window.location.search);
+            const region = params.get('region');
+            const itemType = params.get('item_type');
+            const keywords = params.get('keywords');
+
+            // 2. 읽어온 값들을 상단의 파란색 요약 바에 표시합니다.
+            const summaryBar = document.getElementById('filter-summary-bar');
+            let summaryHTML = '';
+            if (region) summaryHTML += `<div class="summary-item">📍 ${region}</div>`;
+            if (itemType) summaryHTML += `<div class="summary-item">🏷️ ${itemType}</div>`;
+            if (keywords) summaryHTML += `<div class="summary-item">💬 ${keywords}</div>`;
+            summaryBar.innerHTML = summaryHTML;
+            
+            // 3. 백엔드 API를 호출하여 맞춤 추천 데이터를 가져옵니다.
+            try {
+                const response = await fetch(`/wizard/recommendations?${params.toString()}`);
+                const data = await response.json();
+                
+                // 4. 받아온 데이터를 화면에 렌더링합니다.
+                const pageTitle = document.getElementById('page-title');
+                pageTitle.textContent = `시소에서 가장 좋은 일정 ${data.results.length}개를 세웠어요 :-)`;
+                
+                const grid = document.getElementById('results-grid');
+                grid.innerHTML = ''; // 기존 내용을 초기화
+                
+                data.results.forEach(item => {
+                    const cardHTML = `
+                        <div class="item-card">
+                            <img src="https://i.ibb.co/LgB4FkC/profile.jpg" alt="${item.title}">
+                            <span class="heart">♡</span>
+                            <div class="card-content">
+                                <p class="tags">${item.tags.join(' ')}</p>
+                                <h3>${item.title}</h3>
+                                <p class="price">${item.price.toLocaleString()}원~</p>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += cardHTML;
+                });
+
+            } catch (error) {
+                console.error("추천 데이터를 가져오는 데 실패했습니다:", error);
+                document.getElementById('page-title').textContent = "추천을 불러오는 중 오류가 발생했습니다.";
+            }
+        };
+    </script>
+</body>
+</html>

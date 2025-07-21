@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Siso - 로그인</title>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f8f9fa; font-family: sans-serif; }
+        .container { text-align: center; width: 380px; }
+        .logo { font-size: 3rem; font-weight: bold; color: #007bff; margin-bottom: 30px; }
+        .title { color: #666; position: relative; margin-bottom: 40px; }
+        .title::before, .title::after { content: ''; position: absolute; top: 50%; width: 35%; height: 1px; background-color: #ddd; }
+        .title::before { left: 0; }
+        .title::after { right: 0; }
+        .login-options { display: flex; flex-direction: column; gap: 15px; }
+        .option-button { width: 100%; padding: 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; text-decoration: none; display: block; box-sizing: border-box; }
+        .google { background-color: white; color: #333; }
+        .kakao { background-color: #FEE500; color: #3C1E1E; border-color: #FEE500; }
+        .naver { background-color: #03C75A; color: white; border-color: #03C75A; }
+        .email { background-color: #007bff; color: white; border-color: #007bff; }
+        .non-member { background-color: #e9ecef; color: #6c757d; border-color: #e9ecef; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">SISO</div>
+        <div class="title">로그인하기</div>
+        <div class="login-options">
+            <button class="option-button google">구글로 시작하기</button>
+            <button class="option-button kakao">카카오로 시작하기</button>
+            <button class="option-button naver">네이버로 시작하기</button>
+            <a href="/email-login" class="option-button email">이메일로 시작하기</a>
+            <a href="/siso" class="option-button non-member">비회원으로 이용하기</a>
+        </div>
+    </div>
+</body>
+</html>
