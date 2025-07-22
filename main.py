@@ -3,12 +3,28 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from typing import Optional
+from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi.staticfiles import StaticFiles
 
 # --- FastAPI 앱 및 템플릿 설정 ---
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
+
+# --- CORS 미들웨어 설정 ---
+# 개발 중인 프론트엔드(http://localhost:3000)에서의 요청을 허용합니다.
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -24,7 +40,7 @@ async def show_siso_page(request: Request):
 
 # --- '정영호' 님의 고정된 프로필 데이터 ---
 mock_user_data = {
-    "user_id": "youngho.jeong",
+    "user_id": "youngho.jeong@naver.com",
     "password": "siso_password", # 로그인 시 사용할 비밀번호
     "username": "정영호",
     "profile_image_url": "https://i.ibb.co/LgB4FkC/profile.jpg", # 프로필 이미지 URL
